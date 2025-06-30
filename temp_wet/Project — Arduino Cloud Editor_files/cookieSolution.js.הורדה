@@ -1,0 +1,126 @@
+var arduinoCookieSolution = (function (exports) {
+  'use strict';
+
+  function loadJS(url, {async = false}) {
+    return new Promise((resolve, reject) => {
+      // Create a new script element
+      const script = window.document.createElement('script');
+      script.src = url;
+      script.onload = resolve;
+      script.async = async;
+
+      // Inject the script into the DOM
+      const ref = window.document.getElementsByTagName('script')[0];
+      ref.parentNode.insertBefore(script, ref);
+      setTimeout(reject, 2000);
+    });
+  }
+
+  const ENV = 'prod';
+
+  function initCookieConsent(coppa) {
+    let lang = "en";
+
+    let content = `<div id="iubenda-cs-title">Notice</div><div id="iubenda-cs-description">We use cookie for technical purpose and, with your consent, also for analytical and profiling purpose as specified in our cookie policy. You can express your consent by selecting the cookies you intend to accept by clicking “Configure”.  If you wish to continue browsing without cookies that are not strictly necessary, you can deny consent by clicking on “Reject” or by closing this banner by clicking the x in the upper right corner.</div>`;
+
+    if (navigator?.language === 'it-IT') {
+      lang = 'it';
+      content = `<div id="iubenda-cs-title">Usiamo i cookies &#127850;</div><div id="iubenda-cs-description">Utilizziamo i cookie per finalità tecniche e, con il tuo consenso, anche per finalità analitiche e di profilazione come specificato nella cookie policy. Il consenso può essere espresso selezionando i cookie che si intende accettare dalle <a class="iubenda-cs-customize-btn">Impostazioni di tracciamento</a> cliccando "Configura". Se desideri proseguire con la navigazione senza i cookie non necessari, puoi negare il consenso cliccando sul tasto "Rifiuta”; oppure chiudendo questo banner cliccando sulla X in alto a destra.</div>`;
+    }
+
+    window._iub = window._iub || [];
+    // docs: https://www.iubenda.com/it/help/623-come-configurare-la-cookie-solution-guida-avanzata#stile-testo
+    window._iub.csConfiguration = {
+      googleConsentMode: "template",
+      askConsentAtCookiePolicyUpdate: true,
+      ccpaAcknowledgeOnDisplay: false,
+      ccpaApplies: false,
+      ccpaNoticeDisplay: false,
+      consentOnContinuedBrowsing: true,
+      cookiePolicyId: 11225532,
+      countryDetection: true,
+      enableCcpa: false,
+      floatingPreferencesButtonDisplay: false,
+      startOnDomReady: true,
+      lang,
+      // localConsentDomain: 'arduino.cc',
+      perPurposeConsent: true,
+      purposes: coppa ? "1, 4" : "1, 4, 5",
+      siteId: 2023027,
+      whitelabel: true,
+      reloadOnConsent: ENV == "prod",
+      cookiePolicyUrl: lang === "it" ? "https://www.arduino.cc/" + lang + "/cookie-policy" : "https://www.arduino.cc/en/cookie-policy",
+      banner: {
+        applyStyles: false,
+        content,
+        rejectButtonDisplay: true,
+        customizeButtonDisplay: true,
+        customizeButtonCaption: 'CONFIGURE',
+        rejectButtonCaption: lang === 'it' ? 'RIFIUTA' : 'REJECT',
+        position: 'float-bottom-left',
+        acceptButtonDisplay: true,
+        acceptButtonCaption: lang === 'it' ? 'ACCETTA': 'ACCEPT',
+        backgroundOverlay: false,
+        closeButtonDisplay: true,
+        // header
+        logo: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDIiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCA0MiAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzQyNV82MTQpIj4KPHBhdGggZD0iTTQxLjk5OTkgMTAuMDAxMUM0MS45OTk5IDQuNDg2MzIgMzcuMzU4NyAwIDMxLjY1NDIgMEMzMS4xMjc1IDAgMzAuNTkyMiAwLjAzNTk2MzggMzAuMDYyNiAwLjExMjkyM0MyNS42Mjk2IDAuNzQ2NTE3IDIyLjY2MzIgMy45NDI2MiAyMS4wMDI4IDYuMzkzNkMxOS4zMzY2IDMuOTQyNjIgMTYuMzcwMyAwLjc0NjUxNyAxMS45Mzg3IDAuMTEyOTIzQzExLjQwOTEgMC4wMzU5NjM4IDEwLjg3MjQgMCAxMC4zNDcxIDBDNC42Mzk3MiAwIDAgNC40ODYzMiAwIDEwLjAwMTFDMCAxNS41MTY2IDQuNjM5NzEgMjAgMTAuMzQyOCAyMEMxMC44NzI0IDIwIDExLjQwOTEgMTkuOTY2OSAxMS45Mzg3IDE5Ljg5MDdDMTYuMzcwMyAxOS4yNTM1IDE5LjMzNjYgMTYuMDU2IDIxLjAwMjggMTMuNjAyOEMyMi42NjMyIDE2LjA1NiAyNS42Mjk2IDE5LjI1MzUgMzAuMDYyNiAxOS44OTA3QzMwLjU5MjIgMTkuOTY2OSAzMS4xMjc1IDIwIDMxLjY1ODUgMjBDMzcuMzYxNiAyMCA0MS45OTk5IDE1LjUxNjYgNDEuOTk5OSAxMC4wMDExWk0xMS40MzY0IDE2LjM3ODlDMTEuMDc0NyAxNi40MzE0IDEwLjcwNTkgMTYuNDU4NyAxMC4zNDI4IDE2LjQ1ODdDNi41OTE0NSAxNi40NTg3IDMuNTM3NTUgMTMuNTU4OSAzLjUzNzU1IDEwLjAwMTFDMy41Mzc1NSA2LjQ0MTA4IDYuNTkxNDUgMy41NDEzIDEwLjM0NzEgMy41NDEzQzEwLjcwNzMgMy41NDEzIDExLjA3NDcgMy41NzA3OCAxMS40Mzc4IDMuNjIwNDJDMTUuNjE0IDQuMjE4MDUgMTguMTcxMyA4LjM0NjIxIDE5LjAzODIgOS45OTg5M0MxOC4xNjk5IDExLjY1NTkgMTUuNjE0IDE1Ljc4MTkgMTEuNDM2NCAxNi4zNzg5Wk0yMi45NjQ2IDEwLjAwMTFDMjMuODMxNCA4LjM0NjIxIDI2LjM4NzMgNC4yMTgwNSAzMC41NjM1IDMuNjIwNDJDMzAuOTI1MSAzLjU3MDc4IDMxLjI5NTQgMy41NDEzIDMxLjY1NDIgMy41NDEzQzM1LjQwODQgMy41NDEzIDM4LjQ2MjMgNi40NDEwOCAzOC40NjIzIDEwLjAwMTFDMzguNDYyMyAxMy41NTg5IDM1LjQwODQgMTYuNDU4NyAzMS42NTg1IDE2LjQ1ODdDMzEuMjk2OCAxNi40NTg3IDMwLjkyOCAxNi40MzE0IDMwLjU2MzUgMTYuMzc4OUMyNi4zODczIDE1Ljc4MTkgMjMuODI4NSAxMS42NTIzIDIyLjk2NDYgMTAuMDAxMVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xMy43MDgyIDkuMDIzNDRINy40OTU2MVYxMS4wM0gxMy43MDgyVjkuMDIzNDRaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMzIuMzQzMSAxMS4wMzAySDM0LjQ0MjZWOS4wMjM2NkgzMi4zNDMxVjYuOTEyMTFIMzAuMzM1M1Y5LjAyMzY2SDI4LjIzMjlWMTEuMDMwMkgzMC4zMzUzVjEzLjE0MThIMzIuMzQzMVYxMS4wMzAyWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQxLjEzNiAxLjIxNTA0QzQxLjE5OTMgMS4xODM4NCA0MS4yNDY4IDEuMTQxMjggNDEuMjgxNCAxLjA4NjY2QzQxLjMxNDUgMS4wMzIwNSA0MS4zMzE4IDAuOTY5NjM2IDQxLjMzMTggMC45MDM2OTVDNDEuMzMxOCAwLjgwMDEyOCA0MS4yOTQzIDAuNzA5MzQ2IDQxLjIxOTUgMC42MzM0NzRDNDEuMTQ2MSAwLjU1NzU3OSA0MS4wMTkzIDAuNTE4NTU1IDQwLjgzOTQgMC41MTg1NTVDNDAuNzcxNyAwLjUxODU1NSA0MC43MTEyIDAuNTE5OTggNDAuNjU4IDAuNTIzNTRDNDAuNjA0NyAwLjUyNzA3NSA0MC41NTQzIDAuNTMxMzM3IDQwLjUwNTQgMC41Mzc3MjdWMS42MjY0SDQwLjc4MzJWMS4yNjk2Nkg0MC44OTU1TDQxLjA4OTkgMS42MjY0SDQxLjQwNjZMNDEuMTM2IDEuMjE1MDRaTTQwLjg1ODEgMS4wNjc1MkM0MC44MjA3IDEuMDY3NTIgNDAuNzkxOSAxLjA2NTM4IDQwLjc3NDYgMS4wNTkwMlYwLjc2NjA5MkM0MC43OTE5IDAuNzYwNDI2IDQwLjgyMzYgMC43NTY4NjkgNDAuODY2NyAwLjc1Njg2OUM0MC45ODQ4IDAuNzU2ODY5IDQxLjA0MzggMC44MDc5NDkgNDEuMDQzOCAwLjkxMjE5MkM0MS4wNDM4IDEuMDE2NDYgNDAuOTgxOSAxLjA2NzUyIDQwLjg1ODEgMS4wNjc1MloiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik00MC44OTUgMEM0MC4yODQ1IDAgMzkuNzkgMC40OTU1OTcgMzkuNzkgMS4xMDc1QzM5Ljc5IDEuNzE4NjkgNDAuMjg0NSAyLjIxNDk5IDQwLjg5NSAyLjIxNDk5QzQxLjUwNDggMi4yMTQ5OSA0MiAxLjcxODY5IDQyIDEuMTA3NUM0MiAwLjQ5NTU5NyA0MS41MDQ4IDAgNDAuODk1IDBaTTQwLjg5NSAxLjk2ODU3QzQwLjQzMTYgMS45Njg1NyA0MC4wNTU5IDEuNTgzMDIgNDAuMDU1OSAxLjEwNzVDNDAuMDU1OSAwLjYzMTk3MyA0MC40MzE2IDAuMjQ1NzIgNDAuODk1IDAuMjQ1NzJDNDEuMzU3NyAwLjI0NTcyIDQxLjczMzQgMC42MzE5NTYgNDEuNzMzNCAxLjEwNzVDNDEuNzMzNCAxLjU4MzA0IDQxLjM1NzcgMS45Njg1NyA0MC44OTUgMS45Njg1N1oiIGZpbGw9IndoaXRlIi8+CjwvZz4KPGRlZnM+CjxjbGlwUGF0aCBpZD0iY2xpcDBfNDI1XzYxNCI+CjxyZWN0IHdpZHRoPSI0MiIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K',
+        brandTextColor: 'white',
+      },
+      callback: {
+        onBannerShown: () => {
+          const closeBtn = document.querySelector(".iubenda-cs-close-btn");
+          closeBtn.removeAttribute("style");
+          closeBtn.classList = "iubenda-cs-accept-btn iubenda-cs-close-btn-second";
+
+          document.querySelector('.iubenda-cs-close-btn')?.style.setProperty('display', 'block', 'important');
+          const closeButton = document.querySelector('.iubenda-cs-close-btn');
+          if (closeButton) {
+            closeButton.style.display = 'block';
+            closeButton.style.opacity = '1';
+            closeButton.style.visibility = 'visible';
+          }
+        },
+        // push events to google tag manager to enable the firing of specific tags according to the preference given by the user
+        onPreferenceExpressedOrNotNeeded: preference => {
+          const dataLayer = window.dataLayer || [];
+          dataLayer.push({
+            // eslint-disable-next-line camelcase
+            iubenda_ccpa_opted_out: window._iub.cs.api.isCcpaOptedOut()
+          });
+          if (preference) {
+            if (preference.consent === true) {
+              dataLayer.push({
+                event: "iubenda_consent_given"
+              });
+            } else if (preference.consent === false) {
+              dataLayer.push({
+                event: "iubenda_consent_rejected"
+              });
+            } else if (preference.purposes) {
+              for (const purposeId in preference.purposes) {
+                if (preference.purposes[purposeId]) {
+                  dataLayer.push({
+                    event: "iubenda_consent_given_purpose_" + purposeId
+                  });
+                }
+              }
+            }
+          } else {
+            dataLayer.push({
+              event: "iubenda_preference_not_needed"
+            });
+          }
+        }
+      }
+    };
+
+    return loadJS("https://cdn.arduino.cc/header-footer/prod/iubenda-1752.js", {async: true});
+  }
+
+  exports.initCookieConsent = initCookieConsent;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+
+}({}));
