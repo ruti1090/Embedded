@@ -407,7 +407,8 @@ void readAndCheckDHTSensor() {
 
 
 // פונקציה לבדיקת חיישן הקרבה הכללי ותגובה
-void checkGeneralProximitySensor() {
+void checkGeneralProximitySensor()
+{
   static int lastSensorValue = HIGH;
   static unsigned long lastInteractionTime = 0;
   const long interactionCooldown = 5000;
