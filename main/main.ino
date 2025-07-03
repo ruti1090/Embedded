@@ -36,8 +36,8 @@ const float MAX_HUMIDITY_ALLOWED = 60.0;
 const float MIN_HUMIDITY_ALLOWED = 30.0;
 
 //חיבור לויפי
-const char* ssid = "Kita-2"; 
-const char* password = "Xnhbrrfxho";    
+const char* ssid = ""; 
+const char* password = "";    
 WebServer server(80); 
 
 //התחברות לשרת לקבלת שעות
