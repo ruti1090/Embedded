@@ -3,8 +3,8 @@
 #include <ArduinoJson.h> // וודא שספרייה זו מותקנת: ArduinoJson by Benoit Blanchon
 
 // הגדרות WiFi - שנה/י זאת לפרטי הרשת שלך!
-const char* ssid = "RutiTikochinski"; // שם הרשת האלחוטית (SSID)
-const char* password = "325672657";    // סיסמת הרשת האלחוטית
+const char* ssid = ""; // שם הרשת האלחוטית (SSID)
+const char* password = "";    // סיסמת הרשת האלחוטית
 
 WebServer server(80); // הפעלת שרת על פורט 80
 
