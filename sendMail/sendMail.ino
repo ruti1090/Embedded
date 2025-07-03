@@ -3,14 +3,14 @@
 #include <time.h>
 
 // פרטי WiFi
-const char* ssid = "Kita-2";
-const char* password = "Xnhbrrfxho";
+const char* ssid = "";
+const char* password = "";
 
 // פרטי Gmail
 #define SMTP_HOST "smtp.gmail.com"
 #define SMTP_PORT 465
 #define AUTHOR_EMAIL "R0548551090@gmail.com"
-#define AUTHOR_PASSWORD "papw bfnh psry qhhd"
+#define AUTHOR_PASSWORD ""
 #define RECIPIENT_EMAIL "R0548551090@gmail.com"
 
 // משתנה גלובלי שבו מצטברים נתונים מהחיישנים
