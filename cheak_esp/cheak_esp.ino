@@ -47,9 +47,7 @@ const int  AUDIO_PAY_ATTENTION = 5;   // 0005.mp3 (לשים לב/תרופה ממ
 // AUDIO_HIGH_TEMP_ALERT הוסרה לחלוטין
 // --- סוף קונפיגורציית DFPlayer Mini ---
 
-// --- קונפיגורציה עבור חיישן טמפרטורת גוף MAX30205 (XA0040) - כל הקטע הוסר לחלוטין ---
-// אין צורך יותר בספריית SparkFun_MAX30205_Body_Temperature_Sensor.h או במשתנים הקשורים לחיישן.
-// --- סוף קונפיגורציית MAX30205 (הוסרה לחלוטין) ---
+
 
 
 // הגדרת מקסימום התרופות שניתן לשמור
@@ -86,8 +84,8 @@ Servo servoBottle2;
 Servo servoBottle3;
 
 // פרטי רשת ה-WiFi שלך
-const char* ssid = "Kita-2";
-const char* password = "Xnhbrrfxho";
+const char* ssid = "";
+const char* password = "";
 
 WebServer server(80);
 
